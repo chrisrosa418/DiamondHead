@@ -83,8 +83,8 @@ def getMarketHistory(currency):
     return response_dict
 
 def getOrderHistory():
-    key = 'd19a4c8a35bf489b961e28a843cecf1d'
-    secret = '55901553efa54d75a6e3a3e5f723042b'
+    key = '4c5880475bdc47eeb48066e4f6fa9f32'
+    secret = '75e5e906a1454abfb2fb81b16c5e9298'
 
     values = {'count': '10'}
     method = 'getorderhistory'
@@ -126,6 +126,9 @@ def parseRecentOrders():
 
     dict = json.loads(app)
     mm = pd.DataFrame(dict['result'])
+
+    return mm
+
 
 
 

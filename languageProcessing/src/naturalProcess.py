@@ -3,6 +3,7 @@ from nltk.tokenize import sent_tokenize, word_tokenize
 import requests
 from requests.packages.urllib3.exceptions import InsecureRequestWarning
 import warnings
+from textblob import TextBlob
 warnings.filterwarnings("ignore")
 
 import tweepy
@@ -19,6 +20,49 @@ auth = OAuthHandler(consumer_key, consumer_secret)
 auth.set_access_token(access_token, access_secret)
 
 api = tweepy.API(auth)
+
+
+#public_tweets = api.search('Trump')
+query = 'FEYE'
+count = 1000
+public_tweets = api.search(q=query, count=count)
+
+holder = []
+
+for tweet in public_tweets:
+    #print tweet.text
+    anaylsis = TextBlob(tweet.text)
+    #print anaylsis.sentiment
+    internal = {tweet.text: anaylsis.sentiment}
+    internal['created_at'] = str(tweet.created_at)
+    holder.append(internal)
+
+
+for i in holder:
+    print i
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+'''
+
+
+
 
 #public_tweets = api.home_timeline()
 #for tweet in public_tweets:
@@ -52,3 +96,4 @@ twitter_stream.filter(track=['#NBADraft'])
 #print (word_tokenize(example_text))
 
 
+'''

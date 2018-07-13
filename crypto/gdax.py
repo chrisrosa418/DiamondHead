@@ -4,7 +4,7 @@ from requests.auth import AuthBase
 import base64, hashlib, hmac, time
 import json
 
-class GDAXRequestAuth(AuthBase):
+class CoinbaseExchangeAuth(AuthBase):
     def __init__(self, api_key, secret_key, passphrase):
         self.api_key = api_key
         self.secret_key = secret_key
@@ -14,8 +14,9 @@ class GDAXRequestAuth(AuthBase):
         timestamp = str(time.time())
         message = timestamp + request.method + request.path_url + (request.body or '')
         hmac_key = base64.b64decode(self.secret_key)
-        signature = hmac.new(hmac_key, message.encode('utf-8'), hashlib.sha256)
-        signature_b64 = base64.b64encode(signature.digest())
+        signature = hmac.new(hmac_key, message, hashlib.sha256)
+        signature_b64 = signature.digest().encode('base64').rstrip('\n')
+
         request.headers.update({
             'CB-ACCESS-SIGN': signature_b64,
             'CB-ACCESS-TIMESTAMP': timestamp,
@@ -25,31 +26,51 @@ class GDAXRequestAuth(AuthBase):
         })
         return request
 
-def products():
-    response = requests.get(api_base + '/products')
-    # check for invalid api response
-    if response.status_code is not 200:
-        raise Exception('Invalid GDAX Status Code: %d' % response.status_code)
-    return response.json()
 
-api_base = 'https://api-public.sandbox.gdax.com'
-api_key = 'd08ea2ca6f3664eb7942735b9af771a0'
-api_secret = 'dQuh6C650UGhbZK733CiW2EiQJ4KCsysLWcnMBCz2vtBRDQ/boQhwf0FhYDjfyDV5Ax8AcdP2nO2BmcjiOse3w=='
-passphrase = 'tdf5xoiwpv'
+api_url = 'https://api.gdax.com/'
+api_key = 'b5ffca6591c1bcf30173f2d20f9bcf3a'
+api_secret = 'S27BLPE42IpDB3XnqX1ellrZnuCfJ72hEzftKTBDYqQssWGZEaDxmdiWhwrmp1IYwEd+Rfz9u0XQ+ja/sveKHg=='
+passphrase = 'rd207a8uxme'
 
-auth = GDAXRequestAuth(api_key, api_secret, passphrase)
+auth = CoinbaseExchangeAuth(api_key, api_secret, passphrase)
 
-order_url = api_base + '/orders'
-order_data = {
-    'type': 'market',
-    'side': 'buy',
-    'product_id': 'BTC-USD',
-    'size': '0.01'
-}
+#Get Account
+r = requests.get(api_url + 'accounts', auth=auth)
+
+#Get BTC Price
+startTime = '2017-12-01T20:00:00.578544Z'
+endTime = '2017-12-01T23:00:00.578544Z'
+granularity = 600
+
+order_data = {'start': startTime, 'end': endTime, 'granularity': granularity}
+
+r = requests.get(api_url + '/products/BTC-USD/candles', params=order_data, auth=auth)
+
+def _getHistoricalData():
+    print 'test'
+
+
+    currencyId = 'BTC-USD'
+    addUrl = '/products/{}/candles'.format(currencyId)
+
+    startTime = '2017-12-01'
+    endTime = '2017-12-02'
+    granularity = 60
+
+    order_data = {'start': startTime, 'end': endTime, 'granularity': granularity}
+
+    order_url = api_url + '/orders'
+    order = {
+        'size': 1.0,
+        'price': 1.0,
+        'side': 'buy',
+        'product_id': 'BTC-USD',
+    }
 
 
 
-response = requests.post(order_url, data=json.dumps(order_data), auth=auth)
+
+#response = requests.post(order_url, data=json.dumps(order_data), auth=auth)
 
 
 
@@ -58,12 +79,14 @@ response = requests.post(order_url, data=json.dumps(order_data), auth=auth)
 print(response.json())
 
 
-909  fso package list | grep fireeye.hx
-  910  fso package list | grep fireeye.hx | gawk '{print "fso package uninstall $2"}'
-  911  fso package list | grep fireeye.hx | grep -v 112 | gawk '{print "fso package uninstall "$2}'
-  912  fso package list | grep fireeye.hx | grep -v 112 | gawk '{print "fso package uninstall "$2}' | > do.sh
-  915  fso package list | grep fireeye.hx | grep -v 112 | gawk '{print "fso package uninstall "$2}' > do.sh
-  923  fso package install fireeye.hx.2.2.2.tar
-  924  fso package list
+
+
+
+def products():
+    response = requests.get(api_base + '/products')
+    # check for invalid api response
+    if response.status_code is not 200:
+        raise Exception('Invalid GDAX Status Code: %d' % response.status_code)
+    return response.json()
 
 
