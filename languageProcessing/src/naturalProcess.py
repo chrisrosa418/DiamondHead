@@ -23,7 +23,7 @@ api = tweepy.API(auth)
 
 
 #public_tweets = api.search('Trump')
-query = 'FEYE'
+query = 'TWTR'
 count = 1000
 public_tweets = api.search(q=query, count=count)
 
