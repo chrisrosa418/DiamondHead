@@ -4,8 +4,8 @@ import watson_developer_cloud.natural_language_understanding.features.v1 \
   as Features
 
 natural_language_understanding = NaturalLanguageUnderstandingV1(
-  username="christopher.rosa@mandiant.com",
-  password="@bkM~\4SQAfh",
+  username="",
+  password="",
   version="2017-02-27")
 
 response = natural_language_understanding.analyze(
