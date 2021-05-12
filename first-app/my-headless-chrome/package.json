@@ -11,6 +11,6 @@
   "license": "ISC",
   "dependencies": {
     "chrome-remote-interface": "^0.25.5",
-    "nodemailer": "^4.6.4"
+    "nodemailer": "^6.4.16"
   }
 }
